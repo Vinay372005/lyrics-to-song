@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyrics to Song Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f8f8ff;
+      padding: 30px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    textarea, select {
+      width: 90%;
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    textarea { height: 150px; }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 8px 6px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background-color: #5b78f6;
+      color: white;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      background-color: #3b5ce1;
+      transform: scale(1.05);
+    }
+    .output { margin-top: 20px; font-size: 18px; }
+    .container { max-width: 700px; margin: auto; }
+    .dark {
+      background-color: #111;
+      color: white;
+    }
+    .dark textarea,
+    .dark select {
+      background-color: #222;
+      color: white;
+      border: 1px solid #555;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #999;
+    }
+    a {
+      color: #5b78f6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎵 Lyrics to Song Generator</h1>
+
+    <textarea id="lyrics" placeholder="Enter your lyrics here..."></textarea><br>
+
+    <select id="voiceType">
+      <option value="">-- Select Voice Type --</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select><br>
+
+    <select id="musicStyle">
+      <option value="">-- Select Music Style --</option>
+      <option value="Pop">Pop</option>
+      <option value="Lo-fi">Lo-fi</option>
+      <option value="Sad">Sad</option>
+      <option value="Happy">Happy</option>
+      <option value="Rock">Rock</option>
+    </select><br>
+
+    <p style="font-size: 14px; color: #666;">
+      🎶 <i>Lo-fi = calm | Rock = energetic | Sad = emotional | Pop = catchy</i>
+    </p>
+
+    <button onclick="generateSong()">🎤 Generate Song</button>
+    <button onclick="copyLyrics()">📋 Copy Lyrics</button>
+    <button onclick="downloadLyrics()">💾 Download Lyrics</button>
+    <button onclick="suggestLyrics()">💡 Get Sample Lyrics</button>
+    <button onclick="clearLyrics()">🧹 Clear Lyrics</button>
+    <button onclick="toggleTheme()">🌙 Toggle Theme</button><br><br>
+
+    <p>💬 <a href="https://forms.gle/yourformlink" target="_blank">Give Feedback</a></p>
+
+    <div class="output" id="outputMessage"></div>
+
+    <p style="color: #555; font-size: 14px;">
+      👥 Total Visitors: <span id="counterapi-counter"></span>
+    </p>
+  </div>
+
+  <footer>
+    <hr>
+    <p>© 2025 | Built with ❤️ by <strong>Vinay</strong></p>
+  </footer>
+
+  <!-- Visitor Counter Script -->
+  <script async src="https://api.counterapi.dev/script.js" data-id="vinay-lyrics-site" data-start="0"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
