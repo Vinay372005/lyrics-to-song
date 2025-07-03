@@ -107,7 +107,6 @@
 
   <script async src="https://api.counterapi.dev/script.js" data-id="vinay-lyrics-live" data-start="0"></script>
 
-  <!-- ✅ Script Starts -->
   <script>
     function generateSong() {
       const lyrics = document.getElementById("lyrics").value.trim();
@@ -127,52 +126,41 @@
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(lyrics);
-
-      // Adjust pitch/rate based on style
-      switch (style) {
-        case "Pop":
-          utterance.pitch = 1.6;
-          utterance.rate = 1.1;
-          break;
-        case "Lo-fi":
-          utterance.pitch = 1.3;
-          utterance.rate = 0.8;
-          break;
-        case "Sad":
-          utterance.pitch = 1.2;
-          utterance.rate = 0.7;
-          break;
-        case "Happy":
-          utterance.pitch = 1.8;
-          utterance.rate = 1.3;
-          break;
-        case "Rock":
-          utterance.pitch = 1.4;
-          utterance.rate = 1.4;
-          break;
-        default:
-          utterance.pitch = 1.5;
-          utterance.rate = 1.0;
-      }
-
-      // Select voice
+      const lines = lyrics.split(/\n+/);
       const voices = speechSynthesis.getVoices();
-      const filteredVoices = voices.filter(v =>
-        voiceType === "Male" ? v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("daniel") :
-        v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("samantha")
+      const matchedVoices = voices.filter(v =>
+        voiceType === "Male"
+          ? v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("daniel")
+          : v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("samantha")
       );
+      const selectedVoice = matchedVoices.length > 0 ? matchedVoices[0] : null;
 
-      if (filteredVoices.length > 0) {
-        utterance.voice = filteredVoices[0];
+      let basePitch = 1.5, baseRate = 1.0;
+      switch (style) {
+        case "Pop": basePitch = 1.6; baseRate = 1.1; break;
+        case "Lo-fi": basePitch = 1.3; baseRate = 0.85; break;
+        case "Sad": basePitch = 1.1; baseRate = 0.75; break;
+        case "Happy": basePitch = 1.8; baseRate = 1.3; break;
+        case "Rock": basePitch = 1.4; baseRate = 1.4; break;
       }
 
-      utterance.lang = "en-US";
-      utterance.volume = 1;
-
-      // Stop previous speech
       speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
+
+      let delay = 0;
+      lines.forEach((line, index) => {
+        const utterance = new SpeechSynthesisUtterance(line);
+        utterance.voice = selectedVoice;
+        utterance.lang = "en-US";
+        utterance.volume = 1;
+        utterance.pitch = basePitch + (Math.random() * 0.4 - 0.2); // random pitch variation
+        utterance.rate = baseRate;
+
+        setTimeout(() => {
+          speechSynthesis.speak(utterance);
+        }, delay);
+
+        delay += line.length * 70 + 300; // delay based on line length
+      });
 
       document.getElementById("outputMessage").innerHTML = `
         🎤 Singing your lyrics with <strong>${voiceType}</strong> voice in <strong>${style}</strong> style... 🎶
@@ -213,7 +201,6 @@
       document.body.classList.toggle("dark");
     }
 
-    // Force-load voices on some browsers
     speechSynthesis.onvoiceschanged = () => {
       speechSynthesis.getVoices();
     };
