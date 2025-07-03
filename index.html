@@ -95,7 +95,6 @@
 
     <div class="output" id="outputMessage"></div>
 
-    <!-- ✅ Visitor Counter -->
     <p style="color: #555; font-size: 14px;">
       👥 Total Visitors: <span id="counterapi-counter"></span>
     </p>
@@ -106,21 +105,20 @@
     <p>© 2025 | Built with ❤️ by <strong>Vinay</strong></p>
   </footer>
 
-  <!-- ✅ Visitor Counter Script -->
   <script async src="https://api.counterapi.dev/script.js" data-id="vinay-lyrics-live" data-start="0"></script>
 
-  <!-- ✅ Main Script -->
+  <!-- ✅ Script Starts -->
   <script>
     function generateSong() {
       const lyrics = document.getElementById("lyrics").value.trim();
-      const voice = document.getElementById("voiceType").value;
+      const voiceType = document.getElementById("voiceType").value;
       const style = document.getElementById("musicStyle").value;
 
       if (lyrics === "") {
         alert("Please enter your lyrics.");
         return;
       }
-      if (voice === "") {
+      if (voiceType === "") {
         alert("Please select a voice type.");
         return;
       }
@@ -129,18 +127,56 @@
         return;
       }
 
-      navigator.clipboard.writeText(lyrics);
+      const utterance = new SpeechSynthesisUtterance(lyrics);
 
-      const message = `
-        ✅ Lyrics copied!<br><br>
-        🎤 <strong>Voice Type:</strong> ${voice}<br>
-        🎼 <strong>Music Style:</strong> ${style}<br><br>
-        ✍️ Paste your lyrics in Suno AI and generate your song.<br><br>
-        🎧 Enjoy!
+      // Adjust pitch/rate based on style
+      switch (style) {
+        case "Pop":
+          utterance.pitch = 1.6;
+          utterance.rate = 1.1;
+          break;
+        case "Lo-fi":
+          utterance.pitch = 1.3;
+          utterance.rate = 0.8;
+          break;
+        case "Sad":
+          utterance.pitch = 1.2;
+          utterance.rate = 0.7;
+          break;
+        case "Happy":
+          utterance.pitch = 1.8;
+          utterance.rate = 1.3;
+          break;
+        case "Rock":
+          utterance.pitch = 1.4;
+          utterance.rate = 1.4;
+          break;
+        default:
+          utterance.pitch = 1.5;
+          utterance.rate = 1.0;
+      }
+
+      // Select voice
+      const voices = speechSynthesis.getVoices();
+      const filteredVoices = voices.filter(v =>
+        voiceType === "Male" ? v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("daniel") :
+        v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("samantha")
+      );
+
+      if (filteredVoices.length > 0) {
+        utterance.voice = filteredVoices[0];
+      }
+
+      utterance.lang = "en-US";
+      utterance.volume = 1;
+
+      // Stop previous speech
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+
+      document.getElementById("outputMessage").innerHTML = `
+        🎤 Singing your lyrics with <strong>${voiceType}</strong> voice in <strong>${style}</strong> style... 🎶
       `;
-
-      document.getElementById("outputMessage").innerHTML = message;
-      window.open("https://suno.com", "_blank");
     }
 
     function copyLyrics() {
@@ -176,6 +212,11 @@
     function toggleTheme() {
       document.body.classList.toggle("dark");
     }
+
+    // Force-load voices on some browsers
+    speechSynthesis.onvoiceschanged = () => {
+      speechSynthesis.getVoices();
+    };
   </script>
 </body>
 </html>
